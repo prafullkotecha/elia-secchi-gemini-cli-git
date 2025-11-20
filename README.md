@@ -32,6 +32,21 @@ Built with [Gemini CLI](https://github.com/google-gemini/gemini-cli), this syste
 - ❌ Interactive user-facing apps
 - ❌ Tasks requiring sub-second response times
 
+**💬 Want a chat-like experience?**
+
+For interactive, synchronous conversations with your codebase, simply run [Gemini CLI](https://github.com/google-gemini/gemini-cli) directly in your terminal:
+
+```bash
+# Install Gemini CLI
+npm install -g @google/gemini-cli
+
+# Chat with your codebase
+cd your-project
+gemini
+```
+
+This repository is designed for **asynchronous automation** (scheduled tasks, PR workflows). Use Gemini CLI directly when you need real-time, interactive assistance!
+
 ## 🎬 Example: GitHub Stats Skill
 
 This template includes a working example that generates weekly GitHub repository statistics:
