@@ -1,0 +1,7 @@
+# Gemini CLI Extensions to Install
+# One extension per line (GitHub URL or package name)
+# Lines starting with # are ignored
+
+# Example:
+# https://github.com/username/my-extension
+# @scope/package-name
