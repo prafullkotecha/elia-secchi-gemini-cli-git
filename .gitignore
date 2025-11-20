@@ -56,3 +56,6 @@ Thumbs.db
 .gemini/telemetry.log
 .gemini/.user-settings.json
 .gemini/settings.json.orig
+
+# Workflow artifacts
+gemini-artifacts/

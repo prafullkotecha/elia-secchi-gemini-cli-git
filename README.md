@@ -1,10 +1,10 @@
 # Autonomous Agent Workspace
 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
+
 > **A self-learning autonomous agent that uses Git as its long-term memory**
 
 Built with [Gemini CLI](https://github.com/google-gemini/gemini-cli), this system enables agents to learn and evolve over time. Every commit is a memory, every merge is learning, and the repository itself becomes the agent's persistent brain.
-
-**Use cases**: Supports any skill-based automation including marketing content, code review, documentation, testing, analytics, and more. Easily customizable for your specific needs.
 
 ## ✨ Key Features
 
@@ -16,6 +16,38 @@ Built with [Gemini CLI](https://github.com/google-gemini/gemini-cli), this syste
   - ⏰ Scheduled (cron)
   - 💬 On-demand (GitHub issues with `@gemini-cli`)
   - 🔧 Iterative (PR comments with `@gemini-cli`)
+
+## 💡 When to Use This
+
+**Great for:**
+- ✅ Scheduled content generation (reports, summaries, analytics)
+- ✅ Automated code reviews and quality checks
+- ✅ Periodic data analysis and insights
+- ✅ Documentation maintenance and updates
+- ✅ Repository health monitoring
+- ✅ Any repetitive knowledge work
+
+**Not ideal for:**
+- ❌ Real-time applications (runs on schedule or manual trigger)
+- ❌ Interactive user-facing apps
+- ❌ Tasks requiring sub-second response times
+
+## 🎬 Example: GitHub Stats Skill
+
+This template includes a working example that generates weekly GitHub repository statistics:
+
+**What it does:**
+- Analyzes PR activity, issues, and contributor metrics
+- Tracks repository growth (stars, forks)
+- Identifies trends and patterns
+- Generates structured Markdown reports
+
+**Files:**
+- `memory/skills/github_stats/` - The skill (how to analyze)
+- `memory/demands/github-stats-weekly.md` - The task (what to analyze)
+- Generated reports saved to `memory/skills/github_stats/output/`
+
+This demonstrates the skill-based architecture in action!
 
 ## 🚀 Quick Start
 
@@ -54,19 +86,53 @@ gh api -X PUT /repos/:owner/:repo/actions/permissions/workflow \
   -F can_approve_pull_request_reviews=true
 ```
 
-### 4. Test It! (Optional but recommended)
+### 4. Verify Your Setup
+
+Test that everything works:
 
 ```bash
-# Trigger the scheduled demand manually
-gh workflow run agent-scheduler.yml
+# Trigger the example demand manually
+gh workflow run agent-scheduler.yml -f demand=github-stats-weekly
 ```
 
-**Expected results:**
-- Workflow runs successfully
-- IF worthy content found: PR created automatically
-- IF no worthy content: No PR (check logs for reasoning)
+**Check the workflow:**
+```bash
+gh run list --workflow=agent-scheduler.yml
+gh run view  # View the latest run
+```
+
+**What to expect:**
+- ✅ Workflow completes successfully
+- ✅ Agent loads `github_stats` skill knowledge
+- ✅ Analyzes this repository's activity
+- ✅ Creates PR with stats report (if there's activity)
+- ⚠️ No PR if activity threshold not met (check logs)
 
 That's it! The agent is now running. 🎉
+
+## 🧠 Understanding Agent Memory
+
+This system uses Git history as persistent memory:
+
+**Skills** (`memory/skills/`)
+- Long-term knowledge (how to do things)
+- Reusable expertise and guidelines
+- Quality standards and best practices
+
+**Learnings** (`memory/learnings/`)
+- Insights from past executions
+- Patterns and optimizations discovered
+- Lessons to apply in future runs
+
+**Conversations** (`memory/conversations/`)
+- Multi-turn interaction context
+- Maintains continuity across requests
+- Tracks state for complex workflows
+
+Every commit is a memory snapshot. The agent can:
+- ✅ Learn from past mistakes (via learnings)
+- ✅ Improve skills over time (via commits to knowledge)
+- ✅ Maintain conversation context (via conversations)
 
 ## 📁 Directory Structure
 
@@ -81,17 +147,23 @@ That's it! The agent is now running. 🎉
 │
 ├── memory/                         # 🧠 Agent's long-term memory
 │   ├── demands/                    # 📋 Specific tasks to execute
-│   │   └── example-scheduled.md    # Example: Template demand
+│   │   ├── example-scheduled.md    # Template demand (replace me!)
+│   │   └── github-stats-weekly.md  # Example: Weekly stats report
 │   │
-│   ├── skills/                     # 🎯 Specialized knowledge (no config!)
-│   │   └── example_skill/
-│   │       ├── knowledge/          # Pure expertise
-│   │       │   └── GUIDELINES.md   # Skill guidelines
-│   │       └── output/             # Generated content
+│   ├── skills/                     # 🎯 Specialized knowledge
+│   │   ├── example_skill/          # Template skill (replace me!)
+│   │   │   ├── knowledge/          # Pure expertise
+│   │   │   │   └── GUIDELINES.md
+│   │   │   └── output/             # Generated content
+│   │   │
+│   │   └── github_stats/           # Example: GitHub analytics
+│   │       ├── knowledge/
+│   │       │   └── GUIDELINES.md   # How to analyze repos
+│   │       └── output/             # Generated reports
 │   │
 │   ├── context/                    # 📚 Global shared knowledge
-│   │   ├── agent-entrypoint.md     # Routing logic for all triggers
-│   │   └── workflow-guidelines.md  # Universal workflow rules
+│   │   ├── GEMINI.md               # Agent entrypoint & routing
+│   │   └── README.md
 │   │
 │   ├── learnings/                  # 💡 Extracted insights
 │   │   └── README.md
@@ -99,8 +171,66 @@ That's it! The agent is now running. 🎉
 │   └── conversations/              # 💬 Interaction history
 │       └── README.md
 │
+├── CONTRIBUTING.md                 # How to contribute
 └── README.md                       # This file
 ```
+
+## 🎓 Your First Real Task
+
+Let's customize the GitHub stats skill for your use case:
+
+### Step 1: Review the Example
+
+Explore the working example:
+
+```bash
+# Read the skill guidelines (HOW to analyze)
+cat memory/skills/github_stats/knowledge/GUIDELINES.md
+
+# Read the demand file (WHAT to analyze, WHEN to run)
+cat memory/demands/github-stats-weekly.md
+```
+
+### Step 2: Customize the Demand
+
+Edit `memory/demands/github-stats-weekly.md` to:
+- Change the analysis period (daily, bi-weekly, monthly)
+- Adjust what gets analyzed (focus on specific metrics)
+- Modify skip conditions
+- Update the schedule in `.github/workflows/agent-scheduler.yml`
+
+### Step 3: Test Your Changes
+
+```bash
+# Run the demand manually
+gh workflow run agent-scheduler.yml -f demand=github-stats-weekly
+
+# Monitor execution
+gh run watch
+```
+
+### Step 4: Review the Results
+
+Check the workflow logs and generated PR to see:
+- What the agent analyzed
+- The generated report content
+- Quality of insights and recommendations
+
+### Step 5: Create Your Own Skill
+
+Once comfortable, create a skill for your specific use case:
+
+```bash
+mkdir -p memory/skills/your_skill/{knowledge,output}
+```
+
+Create `memory/skills/your_skill/knowledge/GUIDELINES.md` with:
+- Purpose of the skill
+- How to execute it (methodology)
+- Quality standards
+- Output format
+
+Then create a demand that uses it!
 
 ## 🎯 How It Works
 
@@ -124,7 +254,7 @@ Changes Made? ──→ Yes ──→ Create PR
     No ──→ Skip
 ```
 
-**Example**: `example-scheduled` demand runs daily based on your schedule configuration.
+**Example**: `github-stats-weekly` demand runs weekly, analyzing repository activity and creating a PR with insights.
 
 ### On-Demand via Issues
 
@@ -144,7 +274,7 @@ Create PR
 Comment on Issue with PR Link
 ```
 
-**Example**: "Hey `@gemini-cli`, create a LinkedIn post about our new Quick Deploy feature"
+**Example**: "Hey `@gemini-cli`, analyze our repository activity from the past month"
 
 ### PR Iteration
 
@@ -170,7 +300,7 @@ Edit `.github/workflows/agent-scheduler.yml`:
 ```yaml
 on:
   schedule:
-    - cron: '0 9 * * *'  # 9 AM UTC daily
+    - cron: '0 9 * * 1'  # 9 AM UTC every Monday
 ```
 
 Use [crontab.guru](https://crontab.guru/) for custom schedules.
@@ -242,8 +372,8 @@ Skills are auto-discovered - no config needed!
 Just open an issue and ask:
 
 ```
-@gemini-cli create a new demand called "my-task-scheduled" that uses my_skill
-to perform [description of your task].
+@gemini-cli create a new demand called "security-audit-monthly" that uses the
+code-review skill to perform security audits on the codebase.
 ```
 
 The agent will create the demand file with proper structure and frontmatter!
@@ -327,7 +457,7 @@ The **HOW** is defined in the skill's guidelines.
 
 ```
 Title: Task Request
-Body: @gemini-cli [your task description]
+Body: @gemini-cli analyze our repository's PR merge time trends over the past 3 months
 ```
 
 Agent will:
@@ -340,7 +470,7 @@ Agent will:
 ### Example 2: Refine Content via PR Comment
 
 ```
-@gemini-cli this is too technical, make it more accessible
+@gemini-cli this report is too technical, make it more accessible to non-developers
 ```
 
 Agent will:
@@ -359,14 +489,19 @@ Runs automatically based on cron schedule:
 
 ## 🧪 Getting Started with This Template
 
-1. Fork/clone this repo
-2. Add `GEMINI_API_KEY` secret (see Quick Start)
-3. Replace `memory/skills/example_skill/` with your own skill:
-   - Create skill directory structure
-   - Write your guidelines in `knowledge/GUIDELINES.md`
-4. Create your demand in `memory/demands/your-demand.md`
-5. Customize the schedule in `.github/workflows/agent-scheduler.yml`
-6. Done! The agent will auto-discover your skills and demands.
+1. **Fork/clone this repo**
+2. **Add `GEMINI_API_KEY` secret** (see Quick Start)
+3. **Test the example**:
+   ```bash
+   gh workflow run agent-scheduler.yml -f demand=github-stats-weekly
+   ```
+4. **Customize for your needs**:
+   - Modify `memory/skills/github_stats/` or create new skills
+   - Update demands in `memory/demands/`
+   - Adjust schedules in `.github/workflows/agent-scheduler.yml`
+5. **Delete template files** when ready:
+   - Remove `memory/skills/example_skill/`
+   - Remove `memory/demands/example-scheduled.md`
 
 **Example skills you can build**:
 - `code-review` - Automated PR reviews
@@ -384,6 +519,7 @@ Runs automatically based on cron schedule:
 - No changes detected (check logs for reasoning)
 - Content not deemed worthy (demand decides)
 - Error in execution (check workflow logs)
+- Skip conditions met (e.g., no activity threshold)
 
 **Debug**: Check workflow run logs for agent's reasoning
 
@@ -393,6 +529,15 @@ Runs automatically based on cron schedule:
 - ✓ Comment starts with exactly `@gemini-cli`
 - ✓ Workflow permissions are correct (see Quick Start #3)
 - ✓ `GEMINI_API_KEY` secret exists
+- ✓ GitHub Actions are enabled for the repository
+
+### Workflow Fails with Error
+
+Check the improved error messages in workflow logs. Common issues:
+1. **Invalid API key** - Verify `GEMINI_API_KEY` is set correctly
+2. **Rate limits** - Check quota at [Google AI Studio](https://aistudio.google.com/)
+3. **Permissions** - Ensure workflow has write permissions
+4. **Syntax errors** - Verify YAML frontmatter in demand files
 
 ### Rate Limits
 
@@ -400,6 +545,7 @@ Runs automatically based on cron schedule:
 - Reduce schedule frequency (weekly instead of daily)
 - Check Gemini API quota at [AI Studio](https://aistudio.google.com/)
 - Consider upgrading to Gemini API Pro
+- Optimize prompts to use fewer tokens
 
 ## 🏗️ Architecture Principles
 
@@ -420,7 +566,7 @@ Auto-discovered, zero setup.
 Each demand file starts with:
 ```yaml
 ---
-skill: example_skill
+skill: github_stats
 ---
 ```
 
@@ -434,21 +580,25 @@ Workflows discover demands/skills automatically. No hardcoded business logic. Ad
 
 - [Gemini CLI Documentation](https://github.com/google-gemini/gemini-cli)
 - [GitHub Actions Docs](https://docs.github.com/en/actions)
-- [Agent Memory Architecture](memory/context/README.md)
+- [MCP Server Integration](.gemini/README.md)
+- [Contributing Guidelines](CONTRIBUTING.md)
 
 ## 🤝 Contributing
 
-Improvements welcome! This is a template - customize it for your needs.
+This is a **template repository**. Contributions should improve the template for everyone, not add specific skills or use-cases.
 
-**Common enhancements:**
-- Additional skills (code review, docs, testing)
-- Custom triggers (webhooks, manual workflows)
-- Integration with external tools
-- Auto-publishing to platforms
+**We welcome:**
+- Framework improvements
+- Bug fixes
+- Documentation enhancements
+- Developer experience improvements
+- New template features
+
+**See [CONTRIBUTING.md](CONTRIBUTING.md)** for guidelines.
 
 ## 📄 License
 
-MIT License - Use freely for your projects
+Apache License 2.0 - Use freely for your projects. See [LICENSE](LICENSE) for details.
 
 ---
 

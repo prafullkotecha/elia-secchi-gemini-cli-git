@@ -1,3 +1,17 @@
+# Copyright 2025 Google LLC
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
 name: 'Agent Scheduler'
 
 on:
@@ -144,3 +158,27 @@ jobs:
           Co-Authored-By: Gemini <noreply@google.com>"
 
           echo "✅ PR created successfully!"
+
+      - name: 'Handle errors'
+        if: failure()
+        env:
+          DEMAND: ${{ steps.setup.outputs.demand }}
+        run: |
+          WORKFLOW_URL="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+
+          echo "❌ Scheduled demand execution failed: $DEMAND"
+          echo ""
+          echo "Common causes:"
+          echo "1. Invalid GEMINI_API_KEY - Verify secret is set correctly"
+          echo "2. Rate limits - Check quota at https://aistudio.google.com/"
+          echo "3. Invalid demand file - Check YAML frontmatter syntax"
+          echo "4. Missing skill - Ensure skill referenced in demand exists"
+          echo "5. Permissions - Verify workflow has write permissions"
+          echo ""
+          echo "Next steps:"
+          echo "- Review workflow logs above for specific error details"
+          echo "- Check demand file: memory/demands/$DEMAND.md"
+          echo "- Verify skill exists: memory/skills/[skill-name]/"
+          echo "- Test manually: gh workflow run agent-scheduler.yml -f demand=$DEMAND"
+          echo ""
+          echo "View logs: $WORKFLOW_URL"
