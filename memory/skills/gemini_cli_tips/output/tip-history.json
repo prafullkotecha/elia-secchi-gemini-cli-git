@@ -1,5 +1,18 @@
 {
-  "tips": [],
+  "tips": [
+    {
+      "date": "2025-11-22",
+      "category": "Basic Commands",
+      "title": "Effortless Context with the @ Symbol",
+      "file_reference": "README.md",
+      "topics": [
+        "context",
+        "file-reading",
+        "productivity",
+        "basic-usage"
+      ]
+    }
+  ],
   "categories": [
     "Basic Commands",
     "Configuration",
@@ -9,5 +22,5 @@
     "Productivity Tips",
     "Integration Patterns"
   ],
-  "last_category_index": 0
+  "last_category_index": 1
 }
