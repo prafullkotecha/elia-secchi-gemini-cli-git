@@ -14,8 +14,8 @@ Built with [Gemini CLI](https://github.com/google-gemini/gemini-cli), this syste
 - 🔄 **Self-improving** - Learns from feedback and past executions
 - 🤖 **Three execution modes**:
   - ⏰ Scheduled (cron)
-  - 💬 On-demand (GitHub issues with `@gemini-cli`)
-  - 🔧 Iterative (PR comments with `@gemini-cli`)
+  - 💬 On-demand (GitHub issues with `@gemini`)
+  - 🔧 Iterative (PR comments with `@gemini`)
 
 ## 💡 When to Use This
 
@@ -156,7 +156,7 @@ Every commit is a memory snapshot. The agent can:
 ├── .github/
 │   ├── workflows/
 │   │   ├── agent-scheduler.yml    # Executes scheduled demands
-│   │   └── agent.yml               # Handles @gemini-cli mentions
+│   │   └── agent.yml               # Handles @gemini mentions
 │   └── actions/
 │       └── run-gemini-cli-cached/  # Reusable Gemini CLI wrapper
 │
@@ -231,21 +231,74 @@ Check the workflow logs and generated PR to see:
 - The generated report content
 - Quality of insights and recommendations
 
-### Step 5: Create Your Own Skill
+### Step 5: Create Your Own Skill (The Easy Way)
 
-Once comfortable, create a skill for your specific use case:
+**Bootstrap new skills using Gemini CLI itself!**
+
+Instead of manually creating files, let Gemini CLI help you scaffold both the skill and demand:
 
 ```bash
-mkdir -p memory/skills/your_skill/{knowledge,output}
+# Start Gemini CLI in your project
+cd autonomous-agent-workspace
+gemini
 ```
 
-Create `memory/skills/your_skill/knowledge/GUIDELINES.md` with:
-- Purpose of the skill
-- How to execute it (methodology)
-- Quality standards
-- Output format
+Then ask it to create your skill and demand:
 
-Then create a demand that uses it!
+```
+I want to add a new skill called "code-quality" that analyzes code for:
+- Security vulnerabilities
+- Code complexity metrics
+- Test coverage gaps
+- Documentation completeness
+
+Please create:
+1. The skill directory structure in memory/skills/code-quality/
+2. A comprehensive GUIDELINES.md following the same pattern as github_stats
+3. A daily demand file that runs this analysis each morning
+
+The demand should skip if there were no commits in the last 24 hours.
+```
+
+**What Gemini CLI will do:**
+- Read the existing skill structure (github_stats) for reference
+- Create `memory/skills/code-quality/knowledge/GUIDELINES.md` with comprehensive analysis guidelines
+- Create `memory/skills/code-quality/output/README.md` as a placeholder
+- Create `memory/demands/code-quality-daily.md` with proper frontmatter and instructions
+- Follow the established patterns and conventions
+
+**Why this approach works:**
+- ✅ Gemini CLI already understands your repository structure
+- ✅ It can reference existing examples to maintain consistency
+- ✅ Faster than manual file creation
+- ✅ Ensures proper formatting and structure
+- ✅ You can iterate and refine through conversation
+
+**Example conversation flow:**
+
+```
+You: Create the skill structure I described
+
+Gemini: [Creates all files]
+
+You: Make the security analysis more detailed, add specific tools to use
+
+Gemini: [Updates GUIDELINES.md with specific tools like eslint, semgrep, etc.]
+
+You: The daily demand should also check for dependency updates
+
+Gemini: [Updates demand file to include dependency checks]
+```
+
+After Gemini CLI creates your files, commit them and test:
+
+```bash
+# Review what was created
+git status
+
+# Test the new demand
+gh workflow run agent-scheduler.yml -f demand=code-quality-daily
+```
 
 ## 🎯 How It Works
 
@@ -274,7 +327,7 @@ Changes Made? ──→ Yes ──→ Create PR
 ### On-Demand via Issues
 
 ```
-User Creates Issue with @gemini-cli
+User Creates Issue with @gemini
     ↓
 Parse Request
     ↓
@@ -289,12 +342,12 @@ Create PR
 Comment on Issue with PR Link
 ```
 
-**Example**: "Hey `@gemini-cli`, analyze our repository activity from the past month"
+**Example**: "Hey `@gemini`, analyze our repository activity from the past month"
 
 ### PR Iteration
 
 ```
-User Comments "@gemini-cli make this more concise"
+User Comments "@gemini make this more concise"
     ↓
 Checkout PR Branch
     ↓
@@ -346,16 +399,51 @@ Extend the agent with external integrations like Slack, databases, browser autom
 
 **Option 1: Let the Agent Do It (Easiest!)**
 
-Just open an issue and ask:
+Just open an issue and mention the agent:
 
 ```
-@gemini-cli create a new skill called "code-review" that checks for security issues,
+@gemini create a new skill called "code-review" that checks for security issues,
 verifies code quality, and suggests improvements. Also create a daily demand for it.
 ```
 
-The agent will create the skill directory, write the guidelines, and set up the demand for you!
+The agent will create a PR with the skill directory, guidelines, and demand file!
 
-**Option 2: Manual Setup**
+**Why use this approach:**
+- 🤖 Fully automated - agent does all the work
+- 📋 Creates PR you can review before merging
+- 🎯 Can create both skill and demand in one go
+- ✅ Ensures consistent structure and formatting
+- 💬 Agent learns from existing examples (like github_stats)
+
+**Option 2: Use Gemini CLI Directly (Interactive Alternative)**
+
+Bootstrap new skills interactively using Gemini CLI:
+
+```bash
+cd autonomous-agent-workspace
+gemini
+```
+
+Then describe what you want:
+
+```
+Create a new skill called "code-review" that checks for:
+- Security issues
+- Code quality
+- Test coverage
+- Best practices
+
+Also create a daily demand that reviews all open PRs.
+```
+
+**Why use this approach:**
+- 💬 Interactive conversation - refine as you go
+- 🚀 Immediate feedback and iteration
+- 📚 Gemini CLI has full context of your repository
+
+See the detailed walkthrough in "Your First Real Task" above!
+
+**Option 3: Manual Setup**
 
 ```bash
 # 1. Create skill directory
@@ -384,16 +472,35 @@ Skills are auto-discovered - no config needed!
 
 **Option 1: Let the Agent Do It (Easiest!)**
 
-Just open an issue and ask:
+Open an issue and ask:
 
 ```
-@gemini-cli create a new demand called "security-audit-monthly" that uses the
-code-review skill to perform security audits on the codebase.
+@gemini create a new demand called "security-audit-monthly" that uses the
+code-review skill to perform security audits on the codebase. It should run on
+the 1st of each month and skip if no code changes in the last 30 days.
 ```
 
-The agent will create the demand file with proper structure and frontmatter!
+The agent will create a PR with the demand file with proper structure and frontmatter!
 
-**Option 2: Manual Setup**
+**Option 2: Use Gemini CLI Directly (Interactive Alternative)**
+
+Use Gemini CLI interactively to create demands:
+
+```bash
+gemini
+```
+
+```
+Create a monthly demand called "security-audit-monthly" that uses the code-review skill
+to perform comprehensive security audits. The demand should:
+- Run on the 1st of each month
+- Check all code changed in the last 30 days
+- Skip if no code changes detected
+```
+
+Gemini CLI will create the demand file with proper YAML frontmatter and detailed instructions!
+
+**Option 3: Manual Setup**
 
 Demands define **what** to do on a schedule. Create them in `memory/demands/`:
 
@@ -472,7 +579,7 @@ The **HOW** is defined in the skill's guidelines.
 
 ```
 Title: Task Request
-Body: @gemini-cli analyze our repository's PR merge time trends over the past 3 months
+Body: @gemini analyze our repository's PR merge time trends over the past 3 months
 ```
 
 Agent will:
@@ -485,7 +592,7 @@ Agent will:
 ### Example 2: Refine Content via PR Comment
 
 ```
-@gemini-cli this report is too technical, make it more accessible to non-developers
+@gemini this report is too technical, make it more accessible to non-developers
 ```
 
 Agent will:
@@ -538,10 +645,10 @@ Runs automatically based on cron schedule:
 
 **Debug**: Check workflow run logs for agent's reasoning
 
-### `@gemini-cli` Not Responding
+### `@gemini` Not Responding
 
 **Checklist:**
-- ✓ Comment starts with exactly `@gemini-cli`
+- ✓ Comment starts with exactly `@gemini`
 - ✓ Workflow permissions are correct (see Quick Start #3)
 - ✓ `GEMINI_API_KEY` secret exists
 - ✓ GitHub Actions are enabled for the repository

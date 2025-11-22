@@ -14,7 +14,7 @@
 
 name: 'Autonomous Agent'
 
-# Universal entrypoint for all @gemini-cli interactions
+# Universal entrypoint for all @gemini interactions
 on:
   issue_comment:
     types: [created]
@@ -30,11 +30,11 @@ permissions:
 
 jobs:
   handle-request:
-    # Only run if comment/issue mentions @gemini-cli
+    # Only run if comment/issue mentions @gemini
     if: |
-      contains(github.event.issue.body, '@gemini-cli') ||
-      contains(github.event.comment.body || '', '@gemini-cli') ||
-      contains(github.event.review.body || '', '@gemini-cli')
+      contains(github.event.issue.body, '@gemini') ||
+      contains(github.event.comment.body || '', '@gemini') ||
+      contains(github.event.review.body || '', '@gemini')
     runs-on: ubuntu-latest
     steps:
       - name: 'Determine context'
@@ -87,15 +87,15 @@ jobs:
         run: |
           mkdir -p tmp
 
-          # Extract request text and remove @gemini-cli mention
+          # Extract request text and remove @gemini mention
           if [ "${{ github.event_name }}" = "issues" ]; then
-            echo "$ISSUE_BODY" | sed 's/@gemini-cli//g' > tmp/user_request.txt
+            echo "$ISSUE_BODY" | sed 's/@gemini//g' > tmp/user_request.txt
           elif [ "${{ github.event_name }}" = "pull_request_review_comment" ]; then
             # For inline PR comments, comment body is in github.event.comment.body
-            echo "$COMMENT_BODY" | sed 's/@gemini-cli//g' > tmp/user_request.txt
+            echo "$COMMENT_BODY" | sed 's/@gemini//g' > tmp/user_request.txt
           else
             # For issue comments and PR comments
-            echo "$COMMENT_BODY" | sed 's/@gemini-cli//g' > tmp/user_request.txt
+            echo "$COMMENT_BODY" | sed 's/@gemini//g' > tmp/user_request.txt
           fi
 
           # Set context type

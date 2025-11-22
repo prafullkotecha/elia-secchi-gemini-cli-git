@@ -103,7 +103,7 @@ The prompt IS the demand file (e.g., `memory/demands/example-scheduled.md`).
 
 **Note**: The schedule (WHEN to run) is defined in the workflow file, not in the demand.
 
-### For @gemini-cli Mentions (`agent.yml`)
+### For @gemini Mentions (`agent.yml`)
 The workflow concatenates all context into the prompt file (`tmp/prompt.md`).
 
 **What you'll see in the prompt:**
@@ -115,7 +115,7 @@ The workflow concatenates all context into the prompt file (`tmp/prompt.md`).
 - `# Issue Comment History` - (if issue comment)
 
 **For PR Comments:**
-- `# User Request` - the @gemini-cli comment
+- `# User Request` - the @gemini comment
 - `# Context Type` - `pr_comment`
 - `# PR Changed Files` - list of files in the PR
 - `# PR Conversation History` - all previous comments
