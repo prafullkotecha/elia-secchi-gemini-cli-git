@@ -47,20 +47,20 @@ gemini
 
 This repository is designed for **asynchronous automation** (scheduled tasks, PR workflows). Use Gemini CLI directly when you need real-time, interactive assistance!
 
-## 🎬 Example: GitHub Stats Skill
+## 🎬 Example: Gemini CLI Daily Tips
 
-This template includes a working example that generates weekly GitHub repository statistics:
+This template includes a working example that generates daily tips about Gemini CLI:
 
 **What it does:**
-- Analyzes PR activity, issues, and contributor metrics
-- Tracks repository growth (stars, forks)
-- Identifies trends and patterns
-- Generates structured Markdown reports
+- Analyzes the [Gemini CLI](https://github.com/google-gemini/gemini-cli) repository
+- Extracts features, best practices, and usage patterns
+- Generates educational daily tips for Gemini CLI users
+- Covers commands, configuration, MCP servers, extensions, and productivity tips
 
 **Files:**
-- `memory/skills/github_stats/` - The skill (how to analyze)
-- `memory/demands/github-stats-weekly.md` - The task (what to analyze)
-- Generated reports saved to `memory/skills/github_stats/output/`
+- `memory/skills/gemini_cli_tips/` - The skill (how to analyze and generate tips)
+- `memory/demands/gemini-cli-tips-daily.md` - The task (what to analyze)
+- Generated tips saved to `memory/skills/gemini_cli_tips/output/`
 
 This demonstrates the skill-based architecture in action!
 
@@ -107,7 +107,7 @@ Test that everything works:
 
 ```bash
 # Trigger the example demand manually
-gh workflow run agent-scheduler.yml -f demand=github-stats-weekly
+gh workflow run agent-scheduler.yml -f demand=gemini-cli-tips-daily
 ```
 
 **Check the workflow:**
@@ -118,10 +118,11 @@ gh run view  # View the latest run
 
 **What to expect:**
 - ✅ Workflow completes successfully
-- ✅ Agent loads `github_stats` skill knowledge
-- ✅ Analyzes this repository's activity
-- ✅ Creates PR with stats report (if there's activity)
-- ⚠️ No PR if activity threshold not met (check logs)
+- ✅ Agent clones/updates the Gemini CLI repository
+- ✅ Agent loads `gemini_cli_tips` skill knowledge
+- ✅ Generates a daily tip with commands and best practices
+- ✅ Creates PR with the tip content
+- ⚠️ May skip if repository unavailable or recent duplicate topic (check logs)
 
 That's it! The agent is now running. 🎉
 
@@ -163,7 +164,7 @@ Every commit is a memory snapshot. The agent can:
 ├── memory/                         # 🧠 Agent's long-term memory
 │   ├── demands/                    # 📋 Specific tasks to execute
 │   │   ├── example-scheduled.md    # Template demand (replace me!)
-│   │   └── github-stats-weekly.md  # Example: Weekly stats report
+│   │   └── gemini-cli-tips-daily.md # Example: Daily Gemini CLI tips
 │   │
 │   ├── skills/                     # 🎯 Specialized knowledge
 │   │   ├── example_skill/          # Template skill (replace me!)
@@ -171,10 +172,10 @@ Every commit is a memory snapshot. The agent can:
 │   │   │   │   └── GUIDELINES.md
 │   │   │   └── output/             # Generated content
 │   │   │
-│   │   └── github_stats/           # Example: GitHub analytics
+│   │   └── gemini_cli_tips/        # Example: Daily Gemini CLI tips
 │   │       ├── knowledge/
-│   │       │   └── GUIDELINES.md   # How to analyze repos
-│   │       └── output/             # Generated reports
+│   │       │   └── GUIDELINES.md   # How to analyze and generate tips
+│   │       └── output/             # Generated tips
 │   │
 │   ├── context/                    # 📚 Global shared knowledge
 │   │   ├── GEMINI.md               # Agent entrypoint & routing
@@ -199,18 +200,18 @@ Let's customize the GitHub stats skill for your use case:
 Explore the working example:
 
 ```bash
-# Read the skill guidelines (HOW to analyze)
-cat memory/skills/github_stats/knowledge/GUIDELINES.md
+# Read the skill guidelines (HOW to analyze and generate tips)
+cat memory/skills/gemini_cli_tips/knowledge/GUIDELINES.md
 
 # Read the demand file (WHAT to analyze, WHEN to run)
-cat memory/demands/github-stats-weekly.md
+cat memory/demands/gemini-cli-tips-daily.md
 ```
 
 ### Step 2: Customize the Demand
 
-Edit `memory/demands/github-stats-weekly.md` to:
-- Change the analysis period (daily, bi-weekly, monthly)
-- Adjust what gets analyzed (focus on specific metrics)
+Edit `memory/demands/gemini-cli-tips-daily.md` to:
+- Change focus areas (specific Gemini CLI features or topics)
+- Adjust tip structure or depth
 - Modify skip conditions
 - Update the schedule in `.github/workflows/agent-scheduler.yml`
 
@@ -218,7 +219,7 @@ Edit `memory/demands/github-stats-weekly.md` to:
 
 ```bash
 # Run the demand manually
-gh workflow run agent-scheduler.yml -f demand=github-stats-weekly
+gh workflow run agent-scheduler.yml -f demand=gemini-cli-tips-daily
 
 # Monitor execution
 gh run watch
@@ -254,14 +255,14 @@ I want to add a new skill called "code-quality" that analyzes code for:
 
 Please create:
 1. The skill directory structure in memory/skills/code-quality/
-2. A comprehensive GUIDELINES.md following the same pattern as github_stats
+2. A comprehensive GUIDELINES.md following the same pattern as gemini_cli_tips
 3. A daily demand file that runs this analysis each morning
 
 The demand should skip if there were no commits in the last 24 hours.
 ```
 
 **What Gemini CLI will do:**
-- Read the existing skill structure (github_stats) for reference
+- Read the existing skill structure (gemini_cli_tips) for reference
 - Create `memory/skills/code-quality/knowledge/GUIDELINES.md` with comprehensive analysis guidelines
 - Create `memory/skills/code-quality/output/README.md` as a placeholder
 - Create `memory/demands/code-quality-daily.md` with proper frontmatter and instructions
@@ -322,7 +323,7 @@ Changes Made? ──→ Yes ──→ Create PR
     No ──→ Skip
 ```
 
-**Example**: `github-stats-weekly` demand runs weekly, analyzing repository activity and creating a PR with insights.
+**Example**: `gemini-cli-tips-daily` demand runs daily, analyzing the Gemini CLI repository and creating a PR with an educational tip.
 
 ### On-Demand via Issues
 
@@ -342,7 +343,7 @@ Create PR
 Comment on Issue with PR Link
 ```
 
-**Example**: "Hey `@gemini`, analyze our repository activity from the past month"
+**Example**: "Hey `@gemini`, generate a tip about using MCP servers with Gemini CLI"
 
 ### PR Iteration
 
@@ -375,7 +376,7 @@ Use [crontab.guru](https://crontab.guru/) for custom schedules.
 
 ### Modify Skill Knowledge
 
-Edit `memory/skills/your-skill/knowledge/GUIDELINES.md` to change:
+Edit skill guidelines like `memory/skills/gemini_cli_tips/knowledge/GUIDELINES.md` to change:
 - Execution methodology
 - Quality standards
 - Output requirements
@@ -413,7 +414,7 @@ The agent will create a PR with the skill directory, guidelines, and demand file
 - 📋 Creates PR you can review before merging
 - 🎯 Can create both skill and demand in one go
 - ✅ Ensures consistent structure and formatting
-- 💬 Agent learns from existing examples (like github_stats)
+- 💬 Agent learns from existing examples (like gemini_cli_tips)
 
 **Option 2: Use Gemini CLI Directly (Interactive Alternative)**
 
@@ -615,10 +616,10 @@ Runs automatically based on cron schedule:
 2. **Add `GEMINI_API_KEY` secret** (see Quick Start)
 3. **Test the example**:
    ```bash
-   gh workflow run agent-scheduler.yml -f demand=github-stats-weekly
+   gh workflow run agent-scheduler.yml -f demand=gemini-cli-tips-daily
    ```
 4. **Customize for your needs**:
-   - Modify `memory/skills/github_stats/` or create new skills
+   - Modify `memory/skills/gemini_cli_tips/` or create new skills
    - Update demands in `memory/demands/`
    - Adjust schedules in `.github/workflows/agent-scheduler.yml`
 5. **Delete template files** when ready:
@@ -688,7 +689,7 @@ Auto-discovered, zero setup.
 Each demand file starts with:
 ```yaml
 ---
-skill: github_stats
+skill: gemini_cli_tips
 ---
 ```
 
