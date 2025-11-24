@@ -19,6 +19,7 @@ limitations under the License.
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](LICENSE)
 [![Built with Gemini](https://img.shields.io/badge/Built%20with-Gemini%20CLI-8E75B2)](https://github.com/google-gemini/gemini-cli)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+![Stars](https://img.shields.io/github/stars/eliasecchig/gemini-cli-git?color=yellow)
 
 
 > **Gemini is the brain. Git is the backend.**
